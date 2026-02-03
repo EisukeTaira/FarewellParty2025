@@ -6,31 +6,12 @@
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT-92-V-KJYFhy_xLpm4Yz879qfyLaxR6cRmW-jOT2Tvg5Xv58x_fs0h87xRst3nE5ThiQzslQZ8opr/pub?output=csv'; // Leave empty to use mock data
 const USE_MOCK_DATA = false; // Set to false when you have a real URL
 
-// Mock data for initial testing
-const MOCK_DATA = `ID,Team Name,Stamps,Status
-1,Team A,5,InProgress
-2,Team B,10,Complete
-3,Team C,2,InProgress
-4,Team D,0,NotStarted
-5,Team E,8,InProgress
-6,Team F,10,Complete
-7,Team G,3,InProgress
-8,Team H,0,NotStarted
-9,Team I,6,InProgress
-10,Team J,9,InProgress
-11,Team K,1,InProgress
-12,Team L,10,Complete
-13,Team M,4,InProgress
-14,Team N,7,InProgress
-15,Team O,2,InProgress
-16,Team P,0,NotStarted
-17,Team Q,10,Complete
-18,Team R,5,InProgress
-19,Team S,8,InProgress
-20,Team T,3,InProgress
-21,Team U,1,InProgress
-22,Team V,6,InProgress
-23,Team W,9,InProgress`;
+// Mock data matching the Sheet structure (for testing)
+const MOCK_DATA = `チーム名,ミッション①,ミッション②,ミッション③,ミッション④,ミッション⑤,ミッション⑥,ミッション⑦,ミッション⑧,ミッション⑨
+Team A,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE
+Team B,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Team C,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE
+Team Test,TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,FALSE,FALSE,FALSE`;
 
 async function fetchData() {
     if (USE_MOCK_DATA || !SHEET_CSV_URL) {
@@ -44,20 +25,31 @@ async function fetchData() {
         return await response.text();
     } catch (error) {
         console.error('Error fetching data:', error);
-        alert('データを取得できませんでした。コンソールを確認してください。');
         return null;
     }
 }
 
 function parseCSV(csvText) {
     const lines = csvText.trim().split('\n');
-    const headers = lines[0].split(',').map(h => h.trim());
+    if (lines.length === 0) return [];
 
-    // Simple CSV parser (assuming no commas in values for simplicity)
+    // Remove BOM if present from the first header
+    let firstHeader = lines[0].split(',')[0].trim();
+    if (firstHeader.charCodeAt(0) === 0xFEFF) {
+        firstHeader = firstHeader.slice(1);
+    }
+
+    const headers = lines[0].split(',').map((h, index) => index === 0 ? firstHeader : h.trim());
+
+    // Simple CSV parser
     const data = [];
     for (let i = 1; i < lines.length; i++) {
+        // Handle empty lines
+        if (!lines[i].trim()) continue;
+
         const currentLine = lines[i].split(',');
-        if (currentLine.length === headers.length) {
+        // Basic length check - allow flexible length if headers match
+        if (currentLine.length >= headers.length) {
             const obj = {};
             for (let j = 0; j < headers.length; j++) {
                 obj[headers[j]] = currentLine[j].trim();
@@ -66,25 +58,6 @@ function parseCSV(csvText) {
         }
     }
     return data;
-}
-
-function getStatusClass(status, stamps) {
-    // Logic to determine color class
-    // You can customize this logic based on your Sheet's status values
-    const s = status ? status.toLowerCase() : '';
-    const count = parseInt(stamps, 10);
-
-    if (s.includes('complete') || s === '完了' || count >= 10) return 'complete'; // Example threshold
-    if (count > 0 || s.includes('progress') || s === '進行中') return 'progress';
-    return 'pending';
-}
-
-function getStatusLabel(status, stamps) {
-    if (status) return status;
-    const count = parseInt(stamps, 10);
-    if (count >= 10) return 'Complete';
-    if (count > 0) return 'In Progress';
-    return 'Not Started';
 }
 
 async function init() {
