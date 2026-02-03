@@ -28,11 +28,14 @@ async function fetchData() {
         return await response.text();
     } catch (error) {
         console.error('Error fetching data:', error);
-        return null;
+        return `ERROR: ${error.message}`;
     }
 }
 
 function parseCSV(csvText) {
+    if (csvText.startsWith('ERROR:')) {
+        throw new Error(csvText);
+    }
     const lines = csvText.trim().split('\n');
     if (lines.length === 0) return [];
 
@@ -68,8 +71,9 @@ async function init() {
     const lastUpdateSpan = document.getElementById('last-update');
 
     const csvData = await fetchData();
-    if (!csvData) {
-        if (container) container.innerHTML = '<div class="loading">Error loading data.</div>';
+    if (!csvData || csvData.startsWith('ERROR:')) {
+        const errorMsg = csvData || 'Unknown Error';
+        if (container) container.innerHTML = `<div class="loading" style="color:red;">Data Load Failed.<br><small>${errorMsg}</small></div>`;
         return;
     }
 
