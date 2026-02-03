@@ -3,7 +3,7 @@
  * Paste your Google Sheets CSV URL here.
  * To get this URL: File > Share > Publish to web > Select Sheet > CSV > Copy Link
  */
-const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT-92-V-KJYFhy_xLpm4Yz879qfyLaxR6cRmW-jOT2Tvg5Xv58x_fs0h87xRst3nE5ThiQzslQZ8opr/pub?output=csv'; // Leave empty to use mock data
+const SHEET_CSV_URL = 'https://script.google.com/macros/s/AKfycbyBpQqL5ULzKsLpebUR8jeYlE9tXZx2hsvOR923RnMTWMHf0b_e7gTmp2rnPybUufhyYQ/exec'; // Leave empty to use mock data
 const USE_MOCK_DATA = false; // Set to false when you have a real URL
 
 // Mock data matching the Sheet structure (for testing)
