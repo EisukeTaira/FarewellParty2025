@@ -100,9 +100,10 @@ main {
     text-align: center;
     transition: transform 0.2s, box-shadow 0.2s;
     height: 100%;
+    box-sizing: border-box;
 }
 
-.team-card:hover {
+.status-grid .team-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
     cursor: pointer;
@@ -142,7 +143,7 @@ main {
     margin-bottom: 15px;
 }
 
-/* Mission Grid Styles */
+/* Mission Grid Styles (Dashboard) */
 .mission-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -171,6 +172,62 @@ main {
     box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
 }
 
+/* Mission List Styles (Detail Page) */
+.mission-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    text-align: left;
+}
+
+.mission-list-item {
+    display: flex;
+    align-items: center;
+    background-color: #fafafa;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 5px solid var(--pending-color);
+    transition: all 0.2s;
+}
+
+.mission-list-item.done {
+    background-color: #f0fff4;
+    border-left-color: var(--success-color);
+}
+
+.mission-list-item .mission-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    margin-right: 15px;
+    font-size: 0.9rem;
+    color: #666;
+    flex-shrink: 0;
+}
+
+.mission-list-item.done .mission-icon {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.mission-list-item .mission-content {
+    flex: 1;
+    font-weight: 500;
+}
+
+.mission-list-item .mission-status-text {
+    font-size: 0.8rem;
+    color: var(--success-color);
+    font-weight: bold;
+    margin-left: 10px;
+}
+
 /* Detail Page Specifics */
 #team-detail-container {
     display: flex;
@@ -178,7 +235,7 @@ main {
 }
 
 #team-detail-container .team-card {
-    max-width: 600px;
+    max-width: 800px;
     width: 100%;
     padding: 40px;
 }
@@ -190,18 +247,7 @@ main {
 
 #team-detail-container .stamps-count {
     font-size: 4rem;
-    margin-bottom: 30px;
-}
-
-#team-detail-container .mission-grid {
-    max-width: 300px;
-    gap: 20px;
-}
-
-#team-detail-container .mission-item {
-    width: 80px;
-    height: 80px;
-    font-size: 1.5rem;
+    margin-bottom: 40px;
 }
 
 footer {
@@ -227,5 +273,13 @@ footer {
         display: block;
         margin-bottom: 10px;
         transform: none;
+    }
+
+    #team-detail-container .team-card {
+        padding: 20px;
+    }
+
+    #team-detail-container .team-name {
+        font-size: 1.8rem;
     }
 }
