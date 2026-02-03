@@ -20,7 +20,9 @@ async function fetchData() {
     }
 
     try {
-        const response = await fetch(SHEET_CSV_URL);
+        // Append timestamp to bypass browser/proxy cache
+        const cacheBuster = `&t=${Date.now()}`;
+        const response = await fetch(SHEET_CSV_URL + cacheBuster);
         if (!response.ok) throw new Error('Network response was not ok');
         return await response.text();
     } catch (error) {
