@@ -20,11 +20,19 @@ body {
     min-height: 100vh;
 }
 
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
 header {
     background-color: var(--card-bg);
     padding: 20px;
     text-align: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 header h1 {
@@ -38,6 +46,15 @@ header p {
     color: #666;
 }
 
+.back-link {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
 main {
     flex: 1;
     padding: 20px;
@@ -47,10 +64,28 @@ main {
     box-sizing: border-box;
 }
 
+/* Notice Banner */
+.notice-banner {
+    background-color: #e3f2fd;
+    color: #0c5460;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #bee5eb;
+}
+
+.notice-icon {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
 .status-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    /* Slightly wider for mission grid */
     gap: 20px;
 }
 
@@ -63,11 +98,14 @@ main {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    transition: transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 100%;
 }
 
 .team-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
 }
 
 .team-name {
@@ -84,7 +122,7 @@ main {
     color: #fff;
     background-color: var(--pending-color);
     color: #333;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .team-status.complete {
@@ -108,20 +146,20 @@ main {
 .mission-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+    gap: 10px;
     width: 100%;
-    max-width: 150px;
+    max-width: 180px;
 }
 
 .mission-item {
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     background-color: var(--pending-color);
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     color: #888;
     font-weight: bold;
     transition: background-color 0.3s;
@@ -133,12 +171,46 @@ main {
     box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
 }
 
+/* Detail Page Specifics */
+#team-detail-container {
+    display: flex;
+    justify-content: center;
+}
+
+#team-detail-container .team-card {
+    max-width: 600px;
+    width: 100%;
+    padding: 40px;
+}
+
+#team-detail-container .team-name {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+#team-detail-container .stamps-count {
+    font-size: 4rem;
+    margin-bottom: 30px;
+}
+
+#team-detail-container .mission-grid {
+    max-width: 300px;
+    gap: 20px;
+}
+
+#team-detail-container .mission-item {
+    width: 80px;
+    height: 80px;
+    font-size: 1.5rem;
+}
+
 footer {
     text-align: center;
     padding: 20px;
     color: #888;
     background-color: var(--card-bg);
     font-size: 0.9rem;
+    margin-top: 20px;
 }
 
 .loading {
@@ -147,4 +219,13 @@ footer {
     padding: 40px;
     font-size: 1.2rem;
     color: #666;
+}
+
+@media (max-width: 600px) {
+    .back-link {
+        position: static;
+        display: block;
+        margin-bottom: 10px;
+        transform: none;
+    }
 }

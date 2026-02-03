@@ -68,59 +68,97 @@ async function init() {
 
     const csvData = await fetchData();
     if (!csvData) {
-        container.innerHTML = '<div class="loading">Error loading data.</div>';
+        if (container) container.innerHTML = '<div class="loading">Error loading data.</div>';
         return;
     }
 
     const teams = parseCSV(csvData);
 
-    container.innerHTML = ''; // Clear loading
+    // Check which page we are on
+    const statusContainer = document.getElementById('status-container');
+    const teamDetailContainer = document.getElementById('team-detail-container');
 
-    teams.forEach(team => {
-        // Headers: チーム名, ミッション①..⑨
-        const name = team['チーム名'] || team['Team Name'] || 'No Name';
+    // Clear loading/previous content
+    if (statusContainer) statusContainer.innerHTML = '';
+    if (teamDetailContainer) teamDetailContainer.innerHTML = '';
 
-        let completedCount = 0;
-        const totalMissions = 9;
-        const missionStatuses = [];
+    // --- DASHBOARD VIEW (index.html) ---
+    if (statusContainer) {
+        teams.forEach((team, index) => {
+            const cardHTML = createCardHTML(team, index, false); // false = not detail view
 
-        // Check each mission column
-        const missionKeys = [
-            'ミッション①', 'ミッション②', 'ミッション③',
-            'ミッション④', 'ミッション⑤', 'ミッション⑥',
-            'ミッション⑦', 'ミッション⑧', 'ミッション⑨'
-        ];
-
-        missionKeys.forEach((key, index) => {
-            const val = (team[key] || '').toUpperCase();
-            const isComplete = val === 'TRUE';
-            if (isComplete) completedCount++;
-            missionStatuses.push(isComplete);
+            // Wrap in anchor tag for linking
+            const link = document.createElement('a');
+            link.href = `team.html?id=${index}`; // Using index as simple ID
+            link.innerHTML = cardHTML;
+            statusContainer.appendChild(link);
         });
+    }
 
-        const statusClass = completedCount === totalMissions ? 'complete' : (completedCount > 0 ? 'progress' : 'pending');
-        const statusLabel = completedCount === totalMissions ? 'All Clear!' : (completedCount > 0 ? 'In Progress' : 'Start');
+    // --- DETAIL VIEW (team.html) ---
+    if (teamDetailContainer) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const teamId = urlParams.get('id');
 
-        // Generate mission circles HTML
-        let missionsHtml = '<div class="mission-grid">';
-        missionStatuses.forEach((isDone, idx) => {
-            missionsHtml += `<div class="mission-item ${isDone ? 'done' : ''}" title="Mission ${idx + 1}">${idx + 1}</div>`;
-        });
-        missionsHtml += '</div>';
+        if (teamId !== null && teams[teamId]) {
+            const team = teams[teamId];
+            const cardHTML = createCardHTML(team, teamId, true); // true = detail view
+            teamDetailContainer.innerHTML = cardHTML;
+        } else {
+            teamDetailContainer.innerHTML = '<div class="loading">Team not found. <br><a href="index.html">Back to Dashboard</a></div>';
+        }
+    }
 
-        const card = document.createElement('div');
-        card.className = 'team-card';
-        card.innerHTML = `
+    const now = new Date();
+    if (lastUpdateSpan) lastUpdateSpan.textContent = now.toLocaleTimeString();
+}
+
+/**
+ * Helper to generate Card HTML
+ * @param {Object} team - Team data object
+ * @param {Number} id - Team index/ID
+ * @param {Boolean} isDetail - True if large detail view
+ */
+function createCardHTML(team, id, isDetail) {
+    // Headers: チーム名, ミッション①..⑨
+    const name = team['チーム名'] || team['Team Name'] || 'No Name';
+
+    let completedCount = 0;
+    const totalMissions = 9;
+    const missionStatuses = [];
+
+    // Check each mission column
+    const missionKeys = [
+        'ミッション①', 'ミッション②', 'ミッション③',
+        'ミッション④', 'ミッション⑤', 'ミッション⑥',
+        'ミッション⑦', 'ミッション⑧', 'ミッション⑨'
+    ];
+
+    missionKeys.forEach((key, index) => {
+        const val = (team[key] || '').toUpperCase();
+        const isComplete = val === 'TRUE';
+        if (isComplete) completedCount++;
+        missionStatuses.push(isComplete);
+    });
+
+    const statusClass = completedCount === totalMissions ? 'complete' : (completedCount > 0 ? 'progress' : 'pending');
+    const statusLabel = completedCount === totalMissions ? 'All Clear!' : (completedCount > 0 ? 'In Progress' : 'Start');
+
+    // Generate mission circles HTML
+    let missionsHtml = '<div class="mission-grid">';
+    missionStatuses.forEach((isDone, idx) => {
+        missionsHtml += `<div class="mission-item ${isDone ? 'done' : ''}" title="Mission ${idx + 1}">${idx + 1}</div>`;
+    });
+    missionsHtml += '</div>';
+
+    return `
+        <div class="team-card ${isDetail ? 'detail-view' : ''}">
             <div class="team-name">${name}</div>
             <div class="team-status ${statusClass}">${statusLabel}</div>
             <div class="stamps-count">${completedCount} <span style="font-size:1rem; color:#666;">/ ${totalMissions}</span></div>
             ${missionsHtml}
-        `;
-        container.appendChild(card);
-    });
-
-    const now = new Date();
-    lastUpdateSpan.textContent = now.toLocaleTimeString();
+        </div>
+    `;
 }
 
 // Initialize

@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stamp Rally Dashboard</title>
+    <title>Team Detail - Stamp Rally 2025</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <header>
-        <h1>Stamp Rally 2025</h1>
-        <p>実施状況確認ボード</p>
+        <a href="index.html" class="back-link">← Dashboard</a>
+        <h1>Team Detail</h1>
     </header>
 
     <main>
@@ -20,9 +20,8 @@
             更新反映には最大5分程度の遅延があります。データが変わらない場合は時間を置いてリロードしてください。
         </div>
 
-        <div id="status-container" class="status-grid">
-            <!-- Team cards will be injected here -->
-            <div class="loading">Loading data...</div>
+        <div id="team-detail-container">
+            <div class="loading">Loading team data...</div>
         </div>
     </main>
 
